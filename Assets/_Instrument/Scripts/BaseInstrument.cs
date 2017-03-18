@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Osc;
+using Osc; 
 
 namespace jasper.Music
 {
@@ -37,6 +37,10 @@ namespace jasper.Music
 
         public NoteMode noteMode = NoteMode.STATIC_MODE;
 		public OutputMode outputMode = OutputMode.MIDI;
+
+        [Range(0, 15)]
+        public int midiChannelOut = 0;
+
         public bool isDebugMode = true;
 
         public int octave
@@ -69,14 +73,14 @@ namespace jasper.Music
         #region Private Variables
 
         // Music Managers
-        private ScaleManager Scales;
-        private ChordManager Chords;
+        protected ScaleManager Scales;
+        protected ChordManager Chords;
 
         // Position Properties
-        private int currInterval = 0;
-        private int _key = 0;
+        protected int currInterval = 0;
+        protected int _key = 0;
 
-        private int _octave = 0; // Range(-4, 4) inclusive, middle c => octave = 0
+        protected int _octave = 0; // Range(-4, 4) inclusive, middle c => octave = 0
 
 		// Note off arrays to check timings
 		// when noteStatus[i] == -1, that means note is off
@@ -86,7 +90,8 @@ namespace jasper.Music
 		private List<int> activeNotes = new List<int>();
 
         /*********************** Sound Output Props ************************/
-        private OscPortSocket socket;
+        protected OscPortSocket socket;
+        protected string OSC_PATH = "/midi";
 
         #endregion
 
@@ -95,7 +100,7 @@ namespace jasper.Music
 
         #region Unity Functions
 
-        void Start()
+        public virtual void Start()
         {
             // Setup musical data
             Scales = gameObject.AddComponent<ScaleManager>();
@@ -112,7 +117,7 @@ namespace jasper.Music
 
         }
 
-		public void Update(){
+		public virtual void Update(){
 
 			// check note off queue
 			for (int i = 0; i < activeNotes.Count; i++) {
@@ -180,13 +185,16 @@ namespace jasper.Music
             switch (outputMode)
             {
                 case OutputMode.OSC:
-                    JsonUtility.ToJson("hellp");
+
+                    MidiCommand com = MidiCommandHelper.NoteOnCommand(midiChannelOut, noteNum, 127);
+                    OscOutput(com);
+
                     break;
 
 
 			case OutputMode.MIDI:
 				
-				MidiOut.SendNoteOn (MidiChannel.Ch1, noteNum, 1);
+				MidiOut.SendNoteOn ((MidiChannel)midiChannelOut, noteNum, 1);
 				break;
 
 			default:
@@ -201,8 +209,9 @@ namespace jasper.Music
 			switch (outputMode)
 			{
 			case OutputMode.OSC:
-				JsonUtility.ToJson("hellp");
-				break;
+                    MidiCommand com = MidiCommandHelper.NoteOffCommand(midiChannelOut, noteNum);
+                    OscOutput(com);
+    				break;
 
 
 			case OutputMode.MIDI:
@@ -252,7 +261,20 @@ namespace jasper.Music
 
         #endregion
 
+
+
+
         #region Private Functions
+
+        /******************** OUTPUT HELPERS ************************/
+        private void OscOutput(MidiCommand command)
+        {
+            var osc = new Osc.MessageEncoder(OSC_PATH);
+            osc.Add(JsonUtility.ToJson(command));
+            socket.Send(osc);
+        }
+
+
 
 		// Turn on note and add to noteOff pool
 		void ActivateNote(int noteNum, float duration){

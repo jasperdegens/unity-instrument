@@ -4,7 +4,19 @@ using UnityEngine;
 
 namespace jasper.Music { 
 
-    public class KeyBoardInstument : BaseInstrument { 
+    public class KeyBoardInstument : BaseInstrument {
+
+        private void Start()
+        {
+            base.Start();
+        }
+
+        public void OnReceive(Osc.OscPort.Capsule c)
+        {
+            MidiCommand com = (MidiCommand)JsonUtility.FromJson((string)c.message.data[0], typeof(MidiCommand));
+            print(com.status);
+        }
+
 
 		void Update(){
 			
