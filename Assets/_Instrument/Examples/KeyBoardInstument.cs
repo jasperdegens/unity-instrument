@@ -6,9 +6,10 @@ namespace jasper.Music {
 
     public class KeyBoardInstument : BaseInstrument { 
 
-	    void Update () {
-
+		void Update(){
+			
             CheckKeyboardEvents();
+			base.Update ();
             
         }
 
