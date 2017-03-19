@@ -10,10 +10,9 @@ namespace jasper.Music
     public class ChordManager : MusicDataStore
     {
 
-        void Start()
-        {
-
-        }
+		public ChordManager(){
+			CreateDefaultChords ();
+		}
 
         public int[] GetChord(string name)
         {

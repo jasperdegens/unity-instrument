@@ -19,7 +19,7 @@ namespace jasper.Music
         }
     }
 
-    public class MusicDataStore : MonoBehaviour
+	public class MusicDataStore : ScriptableObject
     {
 
         protected Dictionary<string, BaseMusicData> dataStore = new Dictionary<string, BaseMusicData>();

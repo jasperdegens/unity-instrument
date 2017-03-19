@@ -103,8 +103,9 @@ namespace jasper.Music
         public virtual void Start()
         {
             // Setup musical data
-            Scales = gameObject.AddComponent<ScaleManager>();
-            Chords = gameObject.AddComponent<ChordManager>();
+			Scales = ScriptableObject.CreateInstance<ScaleManager>();
+			Chords = ScriptableObject.CreateInstance<ChordManager> ();
+
 
 			// Setup noteOff "queue"
 			noteOffCountdown = new float[127];
@@ -113,7 +114,11 @@ namespace jasper.Music
 			}
 
             // Setup output modes
-            socket = gameObject.GetComponent<OscPortSocket>(); // no reveice handler by default
+			if(gameObject != null){
+            	socket = gameObject.GetComponent<OscPortSocket>(); // no reveice handler by default
+			} else {
+				socket = new OscPortSocket ();
+			}
 
         }
 

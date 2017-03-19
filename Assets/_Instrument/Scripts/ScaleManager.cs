@@ -30,7 +30,13 @@ namespace jasper.Music
 
         private BaseMusicData currScale;
         private string currScaleName;
-        void Start()
+        
+
+		public ScaleManager(){
+			this.Setup();
+		}
+
+		private void Setup()
         {
             CreateDefaultScales();
             currScaleName = "major";
