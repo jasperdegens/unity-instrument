@@ -44,7 +44,7 @@ namespace jasper.Music
 
         }
 
-        public ScalePosition GetNoteFromScale(int scalePosition){
+        public ScalePosition GetNoteFromScale(int scalePosition, int minOctave = -4, int maxOctave = 5, bool wrapMode = true){
 
             int octave = (scalePosition / currScale.length);
             int pos = scalePosition % currScale.length;
@@ -53,7 +53,19 @@ namespace jasper.Music
                 pos = currScale.length + pos;
                 octave -= 1;
             }
-
+            if (wrapMode)
+            {
+                if (octave > maxOctave)
+                {
+                    octave = minOctave + octave % (maxOctave - minOctave);
+                } else if (octave < minOctave)
+                {
+                    octave = maxOctave - octave % (maxOctave - minOctave);
+                }
+            } else {
+                octave = Mathf.Clamp(octave, minOctave, maxOctave);
+            }
+            
             int note = currScale.notes[pos];
             return new ScalePosition(note, octave);
         }

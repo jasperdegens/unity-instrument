@@ -41,7 +41,13 @@ namespace jasper.Music
         [Range(0, 15)]
         public int midiChannelOut = 0;
 
-        public bool isDebugMode = true;
+        [Range(-4, 4)]
+        public int minOctave = -4;
+        [Range(-4, 4)]
+        public int maxOctave = 4;
+        
+
+        public bool debug = true;
 
         public int octave
         {
@@ -50,7 +56,7 @@ namespace jasper.Music
             {
                 if (value >= -4 && value < 4)
                 {
-                    _octave = value;
+                    _octave = Mathf.Clamp(value, minOctave, maxOctave);
                 }
             }
         }
@@ -167,7 +173,7 @@ namespace jasper.Music
 
 			}
 
-            if (isDebugMode)
+            if (debug)
             {
                 Debug.Log("Single Note: " + noteNum);
             }
@@ -309,13 +315,13 @@ namespace jasper.Music
             // Handle Static Mode
             if (mode == NoteMode.STATIC_MODE)
             {
-                pos = Scales.GetNoteFromScale(interval);
+                pos = Scales.GetNoteFromScale(interval, minOctave, maxOctave);
             }
             if (mode == NoteMode.RELATIVE_MODE)
             {
                 currInterval += interval;
                 int finalInterval = currInterval; // octave offset (middle c at 0 octave)
-                pos = Scales.GetNoteFromScale(finalInterval);
+                pos = Scales.GetNoteFromScale(finalInterval, minOctave, maxOctave);
                 octave = pos.octaveChange; // need to update octave if changed
             }
 

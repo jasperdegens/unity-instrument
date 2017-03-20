@@ -13,7 +13,9 @@ namespace jasper.Music.Sequencer{
 	[RequireComponent(typeof(BaseInstrument))]
 	public class Sequencer : MonoBehaviour {
 
-		#region Public Properties
+        #region Public Properties
+        public int[] NoteSequence;
+
 		public BeatDivision noteMode;
 
 		[Range(10, 250)]
@@ -27,34 +29,37 @@ namespace jasper.Music.Sequencer{
 
 		public int currentBeat = -1;
 
-        public bool isDebug = false;
+        public bool debug = false;
 
-		#endregion
+        #endregion
 
 
-		#region Private Properties
+        #region Private Properties
 
-		private BaseInstrument instrument;
+        protected BaseInstrument instrument;
 
-		// Time tracking props
-		private double sampleRate;
-		private double nextTick;
-		private bool running = false;
-		private double tickIntervalInSamples = 0;
+        // Time tracking props
+        protected double sampleRate;
+        protected double nextTick;
+		protected bool running = false;
+        protected double tickIntervalInSamples = 0;
 
-		private int totalBeats = 0;
-		private double swingOffset = 0;
+		protected int totalBeats = 0;
+        protected double swingOffset = 0;
+        protected int currNotePosition = 0;
 
-		private int currBpm;
-		private int currTimeSig;
-		private float currSwing;
-		private BeatDivision currNoteMode;
+        protected int currBpm;
+        protected int currTimeSig;
+        protected float currSwing;
+        protected BeatDivision currNoteMode;
 
 		#endregion
 
 		// Use this for initialization
 		public virtual void Start () {
 			instrument = gameObject.GetComponent<BaseInstrument> ();
+
+            NoteSequence = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 
 			sampleRate = AudioSettings.outputSampleRate;
 		}
@@ -139,13 +144,17 @@ namespace jasper.Music.Sequencer{
 				currentBeat = 0;
 			}
 
-			instrument.PlayNote (0);
+            if (currNotePosition > NoteSequence.Length - 1) currNotePosition = 0;
+			instrument.PlayNote (NoteSequence[currNotePosition]);
+            currNotePosition++;
 
-            if (isDebug)
+            if (debug)
             {
                 print(currentBeat);
             }
         }
+
+
 
 	}
 
