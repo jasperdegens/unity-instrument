@@ -79,8 +79,11 @@ namespace jasper.Music.Sequencer{
 					HandleBeat();
 
 					nextTick += tickIntervalInSamples;
+
 					// add swing???
-					nextTick += swing * 0.75f * tickIntervalInSamples; // max at 75% between beats
+					if(totalBeats % 2 == 1){
+						nextTick += swing * 0.9f * tickIntervalInSamples; // max at 90% between beats
+					}
 				}
 
 

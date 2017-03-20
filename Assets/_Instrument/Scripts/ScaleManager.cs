@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 
 namespace jasper.Music
 {
@@ -45,7 +45,6 @@ namespace jasper.Music
         }
 
         public ScalePosition GetNoteFromScale(int scalePosition, int minOctave = -4, int maxOctave = 5, bool wrapMode = true){
-
             int octave = (scalePosition / currScale.length);
             int pos = scalePosition % currScale.length;
             if(pos < 0) // test if position is a decreasing interval
@@ -69,6 +68,26 @@ namespace jasper.Music
             int note = currScale.notes[pos];
             return new ScalePosition(note, octave);
         }
+
+		public void SetScale(ScaleTypes type){
+			switch (type) {
+			case ScaleTypes.Major:
+				SetScale ("major");
+				break;
+			case ScaleTypes.Minor:
+				SetScale ("minor");
+				break;
+			case ScaleTypes.HarmonicMinor:
+				SetScale ("harmonicMinor");
+				break;
+			case ScaleTypes.Blues:
+				SetScale ("blues");
+				break;
+			default:
+				break;
+			}
+
+		}
 
         public void SetScale(string name)
         {
@@ -95,7 +114,7 @@ namespace jasper.Music
             int[] major = new int[] { 0, 2, 4, 5, 7, 9, 11 };
             int[] minor = new int[] { 0, 2, 3, 5, 7, 9, 10 };
             int[] harmonicMinor = new int[] { 0, 2, 3, 5, 7, 8, 11 };
-            int[] blues = new int[] { 0, 3, 5, 6, 7, 8, 10 };
+            int[] blues = new int[] { 0, 3, 5, 6, 7, 10 };
 
             AddScale("major", major);
             AddScale("minor", minor);
