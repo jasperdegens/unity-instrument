@@ -27,6 +27,8 @@ namespace jasper.Music.Sequencer{
 
 		public int currentBeat = -1;
 
+        public bool isDebug = false;
+
 		#endregion
 
 
@@ -51,14 +53,14 @@ namespace jasper.Music.Sequencer{
 		#endregion
 
 		// Use this for initialization
-		void Start () {
+		public virtual void Start () {
 			instrument = gameObject.GetComponent<BaseInstrument> ();
 
 			sampleRate = AudioSettings.outputSampleRate;
 		}
 
 		// Update is called once per frame
-		void Update () {
+		public virtual void Update () {
 
 			if (currBpm != bpm || currNoteMode != noteMode) {
 				currBpm = bpm;
@@ -82,14 +84,15 @@ namespace jasper.Music.Sequencer{
 			}
 		}
 
-		public void HandleButton(){
-			if (running)
-				StopSequencer ();
-			else
+		public virtual void ToggleSequencer(){
+            running = !running;
+            if (running)
 				StartSequencer ();
+			else
+				StopSequencer ();
 		}
 
-		public void StartSequencer(){
+		public virtual void StartSequencer(){
 
 			currBpm = bpm;
 			currTimeSig = timeSignature;
@@ -101,7 +104,7 @@ namespace jasper.Music.Sequencer{
 			running = true;
 		}
 
-		public void StopSequencer(){
+		public virtual void StopSequencer(){
 			running = false;
 		}
 
@@ -128,7 +131,7 @@ namespace jasper.Music.Sequencer{
 
 		}
 
-		private void HandleBeat(){
+		protected virtual void HandleBeat(){
 
 			currentBeat++;
 			totalBeats++;
@@ -136,12 +139,13 @@ namespace jasper.Music.Sequencer{
 				currentBeat = 0;
 			}
 
-			print (currentBeat);
 			instrument.PlayNote (0);
 
-
-
-		}
+            if (isDebug)
+            {
+                print(currentBeat);
+            }
+        }
 
 	}
 

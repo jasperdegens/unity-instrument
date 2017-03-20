@@ -30,6 +30,10 @@ namespace jasper.Music {
             // as much as it sucks need to check each key
             if (Input.GetKeyDown(KeyCode.A))
             {
+
+                FlowerManager.Instance.SetFlower(FLOWER_TYPE.AJISAI, GrowingFlower.MODE.PONG, Vector3.zero, Quaternion.LookRotation(Vector3.one, Vector3.up), Vector3.one, Vector3.zero, 0.9f, Random.value * 0.1f);
+
+
                 int interval = noteMode == NoteMode.RELATIVE_MODE ? -4 : 0;
                 PlayNote(interval);
             }

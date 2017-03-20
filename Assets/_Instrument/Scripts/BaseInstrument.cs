@@ -149,12 +149,12 @@ namespace jasper.Music
 
         #region Public Functions
 
-		public void PlayNote(int interval, float duration = 1.5f)
+		public virtual void PlayNote(int interval, float duration = 1.5f)
         {
             PlayNote(interval, noteMode);
         }
 
-		public void PlayNote(int interval, NoteMode mode, float duration = 1.5f)
+		public virtual void PlayNote(int interval, NoteMode mode, float duration = 1.5f)
         {
             int noteNum = GetSingleNote(interval, mode);
 
@@ -173,7 +173,7 @@ namespace jasper.Music
             }
         }
 
-		public void PlayChord(string chordName, float duration = 1.5f)
+		public virtual void PlayChord(string chordName, float duration = 1.5f)
         {
             int[] chordNotes = GetChordNotes(chordName);
 
@@ -185,7 +185,7 @@ namespace jasper.Music
 
 
         // TODO: ALL OF THIS
-        public void NoteOn(int noteNum)
+        public virtual void NoteOn(int noteNum)
         {
             switch (outputMode)
             {
@@ -208,7 +208,7 @@ namespace jasper.Music
             }
         }
 
-		public void NoteOff(int noteNum)
+		public virtual void NoteOff(int noteNum)
 		{
 
 			switch (outputMode)
@@ -234,12 +234,12 @@ namespace jasper.Music
 
         /**************** Adjust Instument Parameters ****************/
 
-        public void SetKey(int key)
+        public virtual void SetKey(int key)
         {
             this.key = key;
         }
 
-        public void SetKey(string key)
+        public virtual void SetKey(string key)
         {
             int newKey = 0;
             switch (key)
@@ -276,6 +276,7 @@ namespace jasper.Music
         {
             var osc = new Osc.MessageEncoder(OSC_PATH);
             osc.Add(JsonUtility.ToJson(command));
+            print(command);
             socket.Send(osc);
         }
 
