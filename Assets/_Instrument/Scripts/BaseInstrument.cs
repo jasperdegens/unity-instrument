@@ -17,7 +17,8 @@ namespace jasper.Music
     {
         MIDI,
         AUDIOSOURCE,
-        OSC
+        OSC,
+		MIDI_SLAVE
     }
 
 
@@ -51,7 +52,7 @@ namespace jasper.Music
             }
         }
 
-        public int key// 0 = c, 1 = d, etc
+        public int key // 0 = c, 1 = d, etc
         {
             get { return _key; }
             set
@@ -106,6 +107,7 @@ namespace jasper.Music
 			Scales = ScriptableObject.CreateInstance<ScaleManager>();
 			Chords = ScriptableObject.CreateInstance<ChordManager> ();
 
+			Scales.SetScale (scale);
 			currScale = scale;
 
 			// Setup noteOff "queue"
@@ -184,13 +186,13 @@ namespace jasper.Music
         }
 
 
-        public virtual void NoteOn(int noteNum)
+		public virtual void NoteOn(int noteNum, int velocity = 127)
         {
             switch (outputMode)
             {
                 case OutputMode.OSC:
 
-                    MidiCommand com = MidiCommandHelper.NoteOnCommand(midiChannelOut, noteNum, 127);
+                    MidiCommand com = MidiCommandHelper.NoteOnCommand(midiChannelOut, noteNum, velocity);
                     OscOutput(com);
 
                     break;
@@ -198,7 +200,7 @@ namespace jasper.Music
 
 			case OutputMode.MIDI:
 				
-				MidiOut.SendNoteOn ((MidiChannel)midiChannelOut, noteNum, 1);
+				MidiOut.SendNoteOn ((MidiChannel)midiChannelOut, noteNum, velocity / 127.0f);
 				break;
 
 			default:
@@ -229,6 +231,25 @@ namespace jasper.Music
 		}
 
 
+		public virtual void MidiReceive(Osc.OscPort.Capsule c)
+		{
+			MidiCommand com = (MidiCommand)JsonUtility.FromJson((string)c.message.data[0], typeof(MidiCommand));
+			byte midiCommand = (byte)(com.status & 0xf0);
+			byte channel = (byte)(com.status & 0x0f);
+			midiChannelOut = (int)channel;
+			switch (midiCommand)  {
+
+			// Note On Command
+			case 0x80:
+				NoteOn (com.data1, com.data2);
+				break;
+
+				// Note Off Command
+			case 0x90:
+				NoteOff (com.data1);
+				break;
+			}
+		}
 
 
         /**************** Adjust Instument Parameters ****************/
@@ -275,7 +296,6 @@ namespace jasper.Music
         {
             var osc = new Osc.MessageEncoder(OSC_PATH);
             osc.Add(JsonUtility.ToJson(command));
-            print(command);
             socket.Send(osc);
         }
 
