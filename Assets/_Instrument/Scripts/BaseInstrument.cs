@@ -236,6 +236,7 @@ namespace jasper.Music
 			MidiCommand com = (MidiCommand)JsonUtility.FromJson((string)c.message.data[0], typeof(MidiCommand));
 			byte midiCommand = (byte)(com.status & 0xf0);
 			byte channel = (byte)(com.status & 0x0f);
+			print ("received command: " + midiCommand);
 			midiChannelOut = (int)channel;
 			switch (midiCommand)  {
 

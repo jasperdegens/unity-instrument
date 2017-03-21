@@ -6,7 +6,7 @@ namespace jasper.Music {
 
     public class KeyBoardInstument : BaseInstrument {
 
-        private void Start()
+		public override void Start ()
 		{
 			base.Start ();
 		}

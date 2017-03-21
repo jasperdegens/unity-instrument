@@ -11,7 +11,9 @@ namespace jasper.Music
         Major,
         Minor,
         HarmonicMinor,
-        Blues
+        Blues,
+		Kenken,
+		Custom1
     }
     
     public struct ScalePosition
@@ -83,6 +85,14 @@ namespace jasper.Music
 			case ScaleTypes.Blues:
 				SetScale ("blues");
 				break;
+
+			case ScaleTypes.Kenken:
+				SetScale ("kenken");
+				break;
+			case ScaleTypes.Custom1:
+				SetScale ("custom1");
+				break;
+
 			default:
 				break;
 			}
@@ -115,11 +125,16 @@ namespace jasper.Music
             int[] minor = new int[] { 0, 2, 3, 5, 7, 9, 10 };
             int[] harmonicMinor = new int[] { 0, 2, 3, 5, 7, 8, 11 };
             int[] blues = new int[] { 0, 3, 5, 6, 7, 10 };
+			int[] kenken = new int[] { 0, 2, 5, 7, 9, 12, 14 };
+			int[] custom1 = new int[] { 0, 10, 2, 4, 5, 9, 7, 13, -2 };
+
 
             AddScale("major", major);
             AddScale("minor", minor);
             AddScale("harmonicMinor", harmonicMinor);
             AddScale("blues", blues);
+			AddScale ("kenken", kenken);
+			AddScale ("custom1", custom1);
         }
 
     }
