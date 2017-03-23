@@ -26,6 +26,7 @@ public class GridObject : MonoBehaviour {
 
     private Color startColor;
     private Color destColor;
+    private Color baseColor;
     private Material mat;
 
     private Coroutine colorFade;
@@ -48,6 +49,7 @@ public class GridObject : MonoBehaviour {
         mat = gameObject.GetComponent<Renderer>().material;
         startColor = mat.color;
         destColor = new Color(1, .8f, 0, 1);
+        baseColor = destColor;
         
     }
 
@@ -86,17 +88,17 @@ public class GridObject : MonoBehaviour {
     {
         isActive = true;
         interval = 0;
-        SetColor();
-        
+        SetColor();        
     }
     
     private void SetColor()
     {
         if (isActive)
         {
-            //int colorIndex = Mathf.Clamp(intervalColors.Length / 2 + interval, 0, intervalColors.Length - 1);
-            //mat.color = intervalColors[colorIndex];
-            //destColor = mat.color;
+            int colorIndex = Mathf.Clamp(intervalColors.Length / 2 + interval, 0, intervalColors.Length - 1);
+            mat.color = intervalColors[colorIndex];
+            destColor = mat.color;
+            
         }
         else
         {
