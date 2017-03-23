@@ -6,10 +6,8 @@ using jasper.Music.Sequencer;
 
 public class SequencerMultiTrack : Sequencer {
 
-    public GameObject gridPrefab;
-    public int steps = 16;
     public int tracks = 4;
-
+    public int steps = 16;
 
     private GridObject[,] grid;
     private int _currPosition = 0;
@@ -40,9 +38,13 @@ public class SequencerMultiTrack : Sequencer {
         {
             for (int j = 0; j < steps; j++)
             {
-                var go = Instantiate(gridPrefab, gameObject.transform);
+                var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                go.GetComponent<Renderer>().material = new Material(Shader.Find("Unlit/Color"));
+                go.transform.parent = gameObject.transform;
                 go.transform.position = startPos + Vector3.down * i + Vector3.right * j;
-                grid[i, j] = go.GetComponent<GridObject>();
+                go.transform.localScale *= 0.8f;
+                GridObject gridObj = go.AddComponent<GridObject>();
+                grid[i, j] = gridObj;
             }
         }
 

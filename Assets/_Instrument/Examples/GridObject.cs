@@ -24,8 +24,8 @@ public class GridObject : MonoBehaviour {
 
     public bool isActive = false;
 
-    private Color startColor;
-    private Color destColor;
+    public Color startColor = new Color(0.15f, 0.15f, 0.15f, 1);
+    public Color destColor = new Color(1, .8f, 0, 1);
     private Color baseColor;
     private Material mat;
 
@@ -47,8 +47,7 @@ public class GridObject : MonoBehaviour {
         };
 
         mat = gameObject.GetComponent<Renderer>().material;
-        startColor = mat.color;
-        destColor = new Color(1, .8f, 0, 1);
+        mat.color = startColor;
         baseColor = destColor;
         
     }
