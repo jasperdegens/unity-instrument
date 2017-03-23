@@ -17,7 +17,8 @@ namespace jasper.Music
     {
         MIDI,
         AUDIOSOURCE,
-        OSC
+        OSC,
+		MIDI_SLAVE
     }
 
 
@@ -26,20 +27,10 @@ namespace jasper.Music
     public class BaseInstrument : MonoBehaviour
     {
 
-
-
-        /* TODO:
-             - Should have midi out mode??
-             - What are we doing about sound??
-        */
-
         #region Public Variables
 
-        public NoteMode noteMode = NoteMode.STATIC_MODE;
-		public OutputMode outputMode = OutputMode.MIDI;
-
-        [Range(0, 15)]
-        public int midiChannelOut = 0;
+		public NoteMode noteMode = NoteMode.STATIC_MODE;
+		public ScaleTypes scale = ScaleTypes.Major;
 
         [Range(-4, 4)]
         public int minOctave = -4;
@@ -61,7 +52,7 @@ namespace jasper.Music
             }
         }
 
-        public int key// 0 = c, 1 = d, etc
+        public int key // 0 = c, 1 = d, etc
         {
             get { return _key; }
             set
@@ -72,6 +63,10 @@ namespace jasper.Music
                 }
             }
         }
+
+		public OutputMode outputMode = OutputMode.MIDI;
+		[Range(0, 15)]
+		public int midiChannelOut = 0;
 
         #endregion
 
@@ -85,15 +80,15 @@ namespace jasper.Music
         // Position Properties
         protected int currInterval = 0;
         protected int _key = 0;
+		private ScaleTypes currScale;
 
         protected int _octave = 0; // Range(-4, 4) inclusive, middle c => octave = 0
 
-		// Note off arrays to check timings
-		// when noteStatus[i] == -1, that means note is off
-		// when noteStatus[i] <= 0, that means note should be turned off
-		// when noteStatus[i] >0, note is waiting to be turned off
+		// Noteoff midi commands are needed -> this array and list are used for noteoff scheduling
 		private float[] noteOffCountdown;
 		private List<int> activeNotes = new List<int>();
+
+
 
         /*********************** Sound Output Props ************************/
         protected OscPortSocket socket;
@@ -112,6 +107,8 @@ namespace jasper.Music
 			Scales = ScriptableObject.CreateInstance<ScaleManager>();
 			Chords = ScriptableObject.CreateInstance<ChordManager> ();
 
+			Scales.SetScale (scale);
+			currScale = scale;
 
 			// Setup noteOff "queue"
 			noteOffCountdown = new float[127];
@@ -129,6 +126,11 @@ namespace jasper.Music
         }
 
 		public virtual void Update(){
+
+			if (currScale != scale) {
+				currScale = scale;
+				Scales.SetScale (scale);
+			}
 
 			// check note off queue
 			for (int i = 0; i < activeNotes.Count; i++) {
@@ -167,12 +169,6 @@ namespace jasper.Music
 
 			ActivateNote (noteNum, duration);
 
-
-			// if midi we need note on and note off
-			if (outputMode == OutputMode.MIDI) {
-
-			}
-
             if (debug)
             {
                 Debug.Log("Single Note: " + noteNum);
@@ -190,14 +186,13 @@ namespace jasper.Music
         }
 
 
-        // TODO: ALL OF THIS
-        public virtual void NoteOn(int noteNum)
+		public virtual void NoteOn(int noteNum, int velocity = 127)
         {
             switch (outputMode)
             {
                 case OutputMode.OSC:
 
-                    MidiCommand com = MidiCommandHelper.NoteOnCommand(midiChannelOut, noteNum, 127);
+                    MidiCommand com = MidiCommandHelper.NoteOnCommand(midiChannelOut, noteNum, velocity);
                     OscOutput(com);
 
                     break;
@@ -205,7 +200,7 @@ namespace jasper.Music
 
 			case OutputMode.MIDI:
 				
-				MidiOut.SendNoteOn ((MidiChannel)midiChannelOut, noteNum, 1);
+				MidiOut.SendNoteOn ((MidiChannel)midiChannelOut, noteNum, velocity / 127.0f);
 				break;
 
 			default:
@@ -236,6 +231,26 @@ namespace jasper.Music
 		}
 
 
+		public virtual void MidiReceive(Osc.OscPort.Capsule c)
+		{
+			MidiCommand com = (MidiCommand)JsonUtility.FromJson((string)c.message.data[0], typeof(MidiCommand));
+			byte midiCommand = (byte)(com.status & 0xf0);
+			byte channel = (byte)(com.status & 0x0f);
+			print ("received command: " + midiCommand);
+			midiChannelOut = (int)channel;
+			switch (midiCommand)  {
+
+			// Note On Command
+			case 0x80:
+				NoteOn (com.data1, com.data2);
+				break;
+
+				// Note Off Command
+			case 0x90:
+				NoteOff (com.data1);
+				break;
+			}
+		}
 
 
         /**************** Adjust Instument Parameters ****************/
@@ -282,7 +297,6 @@ namespace jasper.Music
         {
             var osc = new Osc.MessageEncoder(OSC_PATH);
             osc.Add(JsonUtility.ToJson(command));
-            print(command);
             socket.Send(osc);
         }
 

@@ -15,7 +15,7 @@ namespace jasper.Music.Sequencer{
 
         #region Public Properties
         public int[] NoteSequence;
-
+		public bool randomize = false;
 		public BeatDivision noteMode;
 
 		[Range(10, 250)]
@@ -79,8 +79,11 @@ namespace jasper.Music.Sequencer{
 					HandleBeat();
 
 					nextTick += tickIntervalInSamples;
+
 					// add swing???
-					nextTick += swing * 0.75f * tickIntervalInSamples; // max at 75% between beats
+					if(totalBeats % 2 == 1){
+						nextTick += swing * 0.9f * tickIntervalInSamples; // max at 90% between beats
+					}
 				}
 
 
@@ -143,10 +146,17 @@ namespace jasper.Music.Sequencer{
 			if (currentBeat > timeSignature) {
 				currentBeat = 0;
 			}
+			int noteIndex = 0;
+			if (randomize) {
+				noteIndex = Random.Range (0, NoteSequence.Length);
+			} else {
+				if (currNotePosition > NoteSequence.Length - 1)
+					currNotePosition = 0;
 
-            if (currNotePosition > NoteSequence.Length - 1) currNotePosition = 0;
-			instrument.PlayNote (NoteSequence[currNotePosition]);
-            currNotePosition++;
+				noteIndex = currNotePosition;
+				currNotePosition++;
+			}
+			instrument.PlayNote (NoteSequence[noteIndex]);
 
             if (debug)
             {
