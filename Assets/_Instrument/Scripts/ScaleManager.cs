@@ -1,20 +1,24 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * ScaleManager.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * ScaleManager contains the core scale and
+ * note position logic. Given a scale and scale
+ * position, it will retrieve a note in that scale
+ * and the corresponding octave. Custom scales can
+ * easily be added.
+ * 
+ * ************************************/
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 namespace jasper.Music
 {
-
-    public enum ScaleTypes
-    {
-        Major,
-        Minor,
-        HarmonicMinor,
-        Blues,
-		Kenken,
-		Custom1
-    }
     
     public struct ScalePosition
     {
@@ -70,34 +74,6 @@ namespace jasper.Music
             int note = currScale.notes[pos];
             return new ScalePosition(note, octave);
         }
-
-		public void SetScale(ScaleTypes type){
-			switch (type) {
-			case ScaleTypes.Major:
-				SetScale ("major");
-				break;
-			case ScaleTypes.Minor:
-				SetScale ("minor");
-				break;
-			case ScaleTypes.HarmonicMinor:
-				SetScale ("harmonicMinor");
-				break;
-			case ScaleTypes.Blues:
-				SetScale ("blues");
-				break;
-
-			case ScaleTypes.Kenken:
-				SetScale ("kenken");
-				break;
-			case ScaleTypes.Custom1:
-				SetScale ("custom1");
-				break;
-
-			default:
-				break;
-			}
-
-		}
 
         public void SetScale(string name)
         {

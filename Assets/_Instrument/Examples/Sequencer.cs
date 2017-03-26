@@ -1,4 +1,17 @@
-﻿using UnityEngine;
+﻿/* ************************************
+ * Sequencer.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * This is an example of leveraging an
+ * instrument in a larger program. This
+ * is a basic step sequencer that can take
+ * a sequence of notes as an input.
+ * 
+ * ************************************/
+
+
+using UnityEngine;
 using System.Collections;
 
 namespace jasper.Music.Sequencer{

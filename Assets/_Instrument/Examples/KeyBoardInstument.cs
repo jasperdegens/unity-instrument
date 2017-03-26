@@ -1,4 +1,16 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * KeyBoardInstrument.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * This is an example of how to create a
+ * playable instrument. Uses keybindings
+ * to the keyboard. A-L are mapped to notes,
+ * Z-M are mapped to chords. 
+ * ************************************/
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +33,13 @@ namespace jasper.Music {
 
         void CheckKeyboardEvents()
         {
+			// reset
+			if (Input.GetKeyDown (KeyCode.R)) 
+			{
+				base.currInterval = 0;
+			}
+
+
             // as much as it sucks need to check each key
             if (Input.GetKeyDown(KeyCode.A))
             { 
@@ -67,6 +86,38 @@ namespace jasper.Music {
                 int interval = noteMode == NoteMode.RELATIVE_MODE ? 4 : 8;
                 PlayNote(interval);
             }
-        }
+
+			// play chords
+			if (Input.GetKeyDown (KeyCode.Z)) 
+			{
+				PlayChord ("1");
+			}
+			if (Input.GetKeyDown (KeyCode.X)) 
+			{
+				PlayChord ("2");
+			}
+			if (Input.GetKeyDown (KeyCode.C)) 
+			{
+				PlayChord ("3");
+			}
+			if (Input.GetKeyDown (KeyCode.V)) 
+			{
+				PlayChord ("4");
+			}
+			if (Input.GetKeyDown (KeyCode.B)) 
+			{
+				PlayChord ("5");
+			}
+			if (Input.GetKeyDown (KeyCode.N)) 
+			{
+				PlayChord ("6");
+			}
+			if (Input.GetKeyDown (KeyCode.M)) 
+			{
+				PlayChord ("7");
+			}
+		
+		}
+
     }
 }

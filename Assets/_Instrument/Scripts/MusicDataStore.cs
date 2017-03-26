@@ -1,4 +1,14 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * BaseMusicData.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * BaseMusicData is the default datastore
+ * for scales/chords/sequences.
+ * 
+ * ************************************/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

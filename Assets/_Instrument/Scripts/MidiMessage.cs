@@ -1,4 +1,14 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * MidiMessage.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * Contains several helper functions for
+ * packing and unpacking midi messages.
+ * 
+ * ************************************/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +30,7 @@ namespace jasper.Music
         }
     }
 
-    public class MidiCommandHelper : MonoBehaviour
+    public class MidiCommandHelper : ScriptableObject
     {
 
         public static MidiCommand NoteOnCommand(int channel, int noteNumber, float velocity)
@@ -38,17 +48,6 @@ namespace jasper.Music
             return new MidiCommand((byte)(0x90 + cn), (byte)noteNumber, (byte)0);
         }
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 
 

@@ -1,4 +1,13 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * ChordManager.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * ChordManager contains several core chords.
+ * 
+ * ************************************/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,10 +46,18 @@ namespace jasper.Music
             int[] one = new int[] { 0, 2, 4 };
             int[] three = new int[] { 2, 4, 6 };
             int[] five = new int[] { 6, 8, 1 }; // ????
+			int[] two = new int[] { 1, 3, 5 };
+			int[] four = new int[] { 3, 5, 7 };
+			int[] six = new int[] { 5, 7, 9 };
+			int[] seventh = new int[] { 0, 2, 4, 6 };
 
             AddChord("1", one);
             AddChord("3", three);
-            AddChord("5", five);
+			AddChord("5", five);
+			AddChord("2", two);
+			AddChord("4", four);
+			AddChord("6", six);
+			AddChord("7", seventh);
         }
 
     }

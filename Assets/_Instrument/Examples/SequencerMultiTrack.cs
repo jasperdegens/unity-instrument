@@ -1,13 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using jasper.Music;
 using jasper.Music.Sequencer;
 
 public class SequencerMultiTrack : Sequencer {
 
+	public struct TrackConfiguration
+	{
+		public int MidiChannelOutput;
+		public OutputMode outMode;
+
+		TrackConfiguration(int output = 0, OutputMode mode = OutputMode.MIDI){
+			MidiChannelOutput = output;
+			outMode = mode;
+		}
+
+	};
+
     public int tracks = 4;
     public int steps = 16;
+	public TrackConfiguration[] trackConfig;
 
     private GridObject[,] grid;
     private int _currPosition = 0;
@@ -28,6 +41,7 @@ public class SequencerMultiTrack : Sequencer {
     {
         base.Start();
 
+		trackConfig = new TrackConfiguration[tracks];
         grid = new GridObject[tracks,steps];
 
         // center around transform midpoint
@@ -67,6 +81,8 @@ public class SequencerMultiTrack : Sequencer {
             if (g.isActive)
             {
                 g.TriggerGrid();
+				instrument.outputMode = trackConfig [i].outMode;
+				instrument.midiChannelOut = trackConfig [i].MidiChannelOutput;
                 instrument.PlayNote(g.interval);
             }
             else

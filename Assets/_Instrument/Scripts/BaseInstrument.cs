@@ -1,4 +1,23 @@
-﻿using System.Collections;
+﻿/* ************************************
+ * BaseInstrument.cs
+ * By Jasper Degens
+ * 26-03-2017
+ * 
+ * BaseInstrument contains the core functions
+ * to retrieve and output musical notes.
+ * Default midi output is to Kejiro's midi bridge
+ * (https://github.com/keijiro/unity-midi-bridge).
+ * 
+ * Instrument has two modes: static and relative.
+ * Relative stores the current note position
+ * (currInterval) and moves that position by a specified
+ * interval.
+ * 
+ * This class is intended to be subclassed.
+ * 
+ * ************************************/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Osc; 
@@ -30,7 +49,7 @@ namespace jasper.Music
         #region Public Variables
 
 		public NoteMode noteMode = NoteMode.STATIC_MODE;
-		public ScaleTypes scale = ScaleTypes.Major;
+		public string scale = "major";
 
         [Range(-4, 4)]
         public int minOctave = -4;
@@ -80,7 +99,7 @@ namespace jasper.Music
         // Position Properties
         protected int currInterval = 0;
         protected int _key = 0;
-		private ScaleTypes currScale;
+		private string currScale;
 
         protected int _octave = 0; // Range(-4, 4) inclusive, middle c => octave = 0
 
