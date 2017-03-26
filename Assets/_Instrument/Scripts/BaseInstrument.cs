@@ -36,8 +36,7 @@ namespace jasper.Music
     {
         MIDI,
         AUDIOSOURCE,
-        OSC,
-		MIDI_SLAVE
+        OSC
     }
 
 
@@ -273,6 +272,11 @@ namespace jasper.Music
 
 
         /**************** Adjust Instument Parameters ****************/
+
+        public void SetScale(string scale)
+        {
+            Scales.SetScale(scale);
+        }
 
         public virtual void SetKey(int key)
         {
