@@ -49,6 +49,7 @@ ScaleManager:
 It is recommended to set scales in an instrument
 
 ChordManager:
+-------------
 ####Adding/Removing Chords:
 - public void AddChord(string name, int[] notes)
 - public bool RemoveChord(string name)
